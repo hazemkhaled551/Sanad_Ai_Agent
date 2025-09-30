@@ -11,12 +11,14 @@ export default function ResetPassword() {
   const [form, setForm] = useState({ password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const userId = searchParams.get("userId") || "";
-  const token = searchParams.get("token") || "";
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
+    if (message) setMessage(""); // مسح الرسالة عند التعديل
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,6 +26,7 @@ export default function ResetPassword() {
 
     if (form.password !== form.confirmPassword) {
       setMessage("Passwords do not match");
+      setSuccess(false);
       return;
     }
 
@@ -34,20 +37,36 @@ export default function ResetPassword() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId:userId, token:token, newPassword: form.password }),
+          body: JSON.stringify({
+            UserId: userId,
+            Token: token,
+            NewPassword: form.password,
+          }),
         }
       );
 
-      const result = await response.text();
+      let result: any = { message: "" };
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        const text = await response.text();
+        result.message = text;
+      }
+
       if (response.ok) {
-        setMessage(result || "Password reset successfully!");
+        setMessage(result?.message || "Password reset successfully!");
+        setSuccess(true);
         setForm({ password: "", confirmPassword: "" });
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setMessage(result || "Reset failed.");
+        setMessage(result?.message || "Reset failed.");
+        setSuccess(false);
       }
-    } catch (err) {
-      setMessage("Error connecting to server");
+    } catch (err: any) {
+      setMessage(err?.message || "Error connecting to server");
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
@@ -70,21 +89,14 @@ export default function ResetPassword() {
 
       {/* ===== Main Content ===== */}
       <main className="flex flex-1 items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white dark:bg-neutral-darker shadow-lg rounded-2xl p-6">
-          <h3 className="text-2xl font-bold text-center text-primary mb-2">
-            Sanad
-          </h3>
-          <h5 className="text-lg font-medium text-center mb-6">
-            Reset Your Password
-          </h5>
+        <div className="w-full max-w-md bg-white dark:bg-neutral-darker shadow-lg rounded-2xl p-6 text-center">
+          <h3 className="text-2xl font-bold text-primary mb-2">Sanad</h3>
+          <h5 className="text-lg font-medium mb-6">Reset Your Password</h5>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
-              >
+              <label htmlFor="password" className="block text-sm font-medium mb-1">
                 New Password
               </label>
               <input
@@ -99,10 +111,7 @@ export default function ResetPassword() {
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium mb-1"
-              >
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
                 Confirm Password
               </label>
               <input
@@ -129,7 +138,13 @@ export default function ResetPassword() {
           </form>
 
           {message && (
-            <div className="mt-3 text-center text-sm text-gray-700 dark:text-gray-300">
+            <div
+              className={`mt-3 text-center text-sm ${
+                success
+                  ? "text-green-600"
+                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md"
+              }`}
+            >
               {message}
             </div>
           )}
