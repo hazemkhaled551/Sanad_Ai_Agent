@@ -18,7 +18,7 @@ export default function ResetPassword() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
-    if (message) setMessage(""); // مسح الرسالة عند التعديل
+    if (message) setMessage(""); 
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
