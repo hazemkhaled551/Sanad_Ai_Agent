@@ -74,7 +74,9 @@ export default function ResetPassword() {
       {/* ===== Main Content ===== */}
       <main className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-sm p-6 bg-white/10 rounded-2xl bg-gradient-to-b from-purple-700 to-gray-900">
-          <h1 className="mt-4 text-xl font-semibold text-white text-center">Sanad</h1>
+          <h1 className="mt-4 text-xl font-semibold text-white text-center">
+            Sanad
+          </h1>
           <p className="text-gray-300 text-sm text-center mt-2">
             Reset Your Password
           </p>
@@ -82,7 +84,6 @@ export default function ResetPassword() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Password */}
             <div>
-          
               <input
                 type="password"
                 id="password"
@@ -96,7 +97,6 @@ export default function ResetPassword() {
 
             {/* Confirm Password */}
             <div>
-          
               <input
                 type="password"
                 id="confirmPassword"
