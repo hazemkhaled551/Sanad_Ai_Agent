@@ -34,7 +34,11 @@ export default function ResetPassword() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId:userId, token:token, newPassword: form.password }),
+          body: JSON.stringify({
+            userId: userId,
+            token: token,
+            newPassword: form.password,
+          }),
         }
       );
 
@@ -54,13 +58,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-light dark:bg-neutral-dark text-neutral-dark dark:text-white">
+    <div className="bg-gradient-to-b from-purple-800 via-indigo-900 to-gray-950 min-h-screen flex flex-col">
       {/* ===== Header ===== */}
-      <header className="px-6 py-4 shadow-sm bg-white dark:bg-neutral-darker">
+      <header className="px-6 py-4 bg-gradient-to-r from-purple-800 via-indigo-900 to-gray-900 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2 space-x-reverse">
-            <Scale className="w-5 h-5 text-primary" />
-            <span className="font-semibold text-2xl text-neutral-dark dark:text-white">
+          <div className="text-white flex items-center space-x-2 space-x-reverse">
+            <span className="font-semibold text-4xl text-white">
               {t("brand")}
             </span>
           </div>
@@ -70,28 +73,22 @@ export default function ResetPassword() {
 
       {/* ===== Main Content ===== */}
       <main className="flex flex-1 items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white dark:bg-neutral-darker shadow-lg rounded-2xl p-6">
-          <h3 className="text-2xl font-bold text-center text-primary mb-2">
-            Sanad
-          </h3>
-          <h5 className="text-lg font-medium text-center mb-6">
+        <div className="w-full max-w-sm p-6 bg-white/10 rounded-2xl bg-gradient-to-b from-purple-700 to-gray-900">
+          <h1 className="mt-4 text-xl font-semibold text-white text-center">Sanad</h1>
+          <p className="text-gray-300 text-sm text-center mt-2">
             Reset Your Password
-          </h5>
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
-              >
-                New Password
-              </label>
+          
               <input
                 type="password"
                 id="password"
                 value={form.password}
                 onChange={handleChange}
+                placeholder="Password"
                 required
                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none dark:bg-neutral-dark dark:border-gray-600"
               />
@@ -99,17 +96,13 @@ export default function ResetPassword() {
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium mb-1"
-              >
-                Confirm Password
-              </label>
+          
               <input
                 type="password"
                 id="confirmPassword"
                 value={form.confirmPassword}
                 onChange={handleChange}
+                placeholder="Confirm Password"
                 required
                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none dark:bg-neutral-dark dark:border-gray-600"
               />
@@ -119,7 +112,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition disabled:opacity-50 flex items-center justify-center"
+              className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center"
             >
               {loading && (
                 <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5 mr-2"></span>

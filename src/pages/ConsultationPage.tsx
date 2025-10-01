@@ -59,7 +59,7 @@ export default function ConsultationPage() {
       <div className="flex h-[calc(100vh-80px)]">
         <Sidebar />
         <main className="flex-1 flex flex-col">
-          <ChatHeader />
+          {/* <ChatHeader /> */}
           <MessagesList messages={messages} isLoading={isLoading} />
           {messages.length === 1 && <QuickReplies onSelect={setInputMessage} />}
           <ChatInput

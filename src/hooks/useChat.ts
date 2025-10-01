@@ -100,6 +100,7 @@ export const useChat = (initialConversationId?: number) => {
       console.log("🔹 Loaded conversation:", data);
 
       const msgs = Array.isArray(data) ? data : data?.messages || [];
+      console.log("🔹 Messages:", msgs);
 
       const loadedMessages: Message[] = msgs.map((msg: any) => ({
         id: msg.id?.toString() || crypto.randomUUID(),
@@ -114,7 +115,7 @@ export const useChat = (initialConversationId?: number) => {
               hour: "2-digit",
               minute: "2-digit",
             }),
-        sources: msg.sources || [],
+        sources: msg.sourceDocs || [],
         role: msg.role || "assistant",
       }));
 
@@ -165,6 +166,9 @@ export const useChat = (initialConversationId?: number) => {
           title,
           createdAt: new Date().toISOString(),
         });
+
+        // 🟢 على طول ابعت الرسالة الأولى بعد إنشاء المحادثة
+        await sendMessageApi(userMessage.content, convId);
       }
 
       const response = await sendMessageApi(userMessage.content, convId);
@@ -179,7 +183,7 @@ export const useChat = (initialConversationId?: number) => {
           hour: "2-digit",
           minute: "2-digit",
         }),
-        sources: response.aiMessage.sources || [],
+        sources: response.aiMessage.sourceDocs || [],
         role: response.aiMessage.role || "AI",
       };
 
@@ -190,13 +194,6 @@ export const useChat = (initialConversationId?: number) => {
       setIsLoading(false);
     }
   };
-
-  // 🟢 لو فيه convId من الأول → نحمل مرة واحدة بس
-  useEffect(() => {
-    if (conversationId) {
-      loadConversation(conversationId);
-    }
-  }, [conversationId]);
 
   return {
     messages,
