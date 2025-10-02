@@ -18,11 +18,24 @@ export default function ResetPassword() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
-    if (message) setMessage(""); 
+    if (message) setMessage("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ✅ تحقق من أن الرابط صالح
+    if (!userId || userId.trim() === "") {
+      setMessage("Invalid reset link. Please request a new password reset email.");
+      setSuccess(false);
+      return;
+    }
+
+    if (!token || token.trim() === "") {
+      setMessage("Invalid or missing token. Please request a new reset email.");
+      setSuccess(false);
+      return;
+    }
 
     if (form.password !== form.confirmPassword) {
       setMessage("Passwords do not match");
@@ -45,32 +58,32 @@ export default function ResetPassword() {
         }
       );
 
-      let result: any = { message: "" };
-      const contentType = response.headers.get("content-type");
+      let errorMessage = "Reset failed.";
 
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      } else {
-        const text = await response.text();
-        result.message = text;
-      }
+      try {
+        const result = await response.json();
 
-      if (response.ok) {
-        setMessage(result?.message || "Password reset successfully!");
-        setSuccess(true);
-        setForm({ password: "", confirmPassword: "" });
-        setTimeout(() => navigate("/login"), 2000);
-      } else {
-        let errorMessage = result?.message || "Reset failed.";
-
-        if (result?.errors) {
-          const firstKey = Object.keys(result.errors)[0];
-          if (firstKey && result.errors[firstKey].length > 0) {
-            errorMessage = result.errors[firstKey][0];
+        if (response.ok) {
+          setMessage(result?.message || "Password reset successfully!");
+          setSuccess(true);
+          setForm({ password: "", confirmPassword: "" });
+          setTimeout(() => navigate("/login"), 2000);
+        } else {
+          // ✅ نعرض أول خطأ من قائمة errors لو موجود
+          if (result?.errors) {
+            const firstKey = Object.keys(result.errors)[0];
+            if (firstKey && result.errors[firstKey].length > 0) {
+              errorMessage = result.errors[firstKey][0];
+            }
+          } else if (result?.message) {
+            errorMessage = result.message;
           }
+          setMessage(errorMessage);
+          setSuccess(false);
         }
-
-        setMessage(errorMessage);
+      } catch {
+        const text = await response.text();
+        setMessage(text || "Reset failed.");
         setSuccess(false);
       }
     } catch (err: any) {
@@ -103,6 +116,7 @@ export default function ResetPassword() {
           <h5 className="text-lg font-medium mb-6">Reset Your Password</h5>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-1">
                 New Password
@@ -117,7 +131,7 @@ export default function ResetPassword() {
               />
             </div>
 
-
+            {/* Confirm Password */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
                 Confirm Password
@@ -132,6 +146,7 @@ export default function ResetPassword() {
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -149,7 +164,7 @@ export default function ResetPassword() {
               className={`mt-3 text-center text-sm ${
                 success
                   ? "text-green-600"
-                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md text-sm text-center"
+                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md"
               }`}
             >
               {message}
