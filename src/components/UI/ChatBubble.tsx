@@ -21,12 +21,12 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   sources,
 }) => {
   const [pop, setPop] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openItems, setOpenItems] = useState<{ [key: number]: boolean }>({});
 
   const navigate = useNavigate();
 
   const { t } = useTranslation();
-  console.log(sources);
+  // console.log(sources);
 
   function togglePop() {
     setPop(!pop);
@@ -54,7 +54,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
             </p>
           )}
         </div>
-        {showActions && !isUser  && (
+        {showActions && !isUser && (
           <div className="mt-4 flex space-x-3 space-x-reverse">
             <button
               onClick={togglePop}
@@ -77,7 +77,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
           <PopUp onClose={togglePop}>
             <div className="max-h-[600px] overflow-y-auto space-y-6 p-4 leading-relaxed">
               {sources
-                ?.split(/(?=مادة\s*\([^)]+\))/) // تقسيم كل مادة
+                ?.split(/(?=مادة\s*\([^)]+\))/)
                 .map((item: string, i: number) => {
                   const match = item.match(/^(مادة\s*\([^)]+\)\s*:?)/);
                   const title = match ? match[0] : `مادة ${i + 1}`;
@@ -85,7 +85,6 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
                     .replace(/^(مادة\s*\([^)]+\)\s*:?)/, "")
                     .trim();
 
-                  // تقسيم النقاط
                   const parts = content
                     .split(/\s*(\d+|[٠-٩]+)[-–.]\s+/)
                     .filter(
@@ -94,6 +93,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
 
                   const intro = parts.length > 0 ? parts[0] : "";
                   const points = parts.slice(1);
+
+                  const isOpen = openItems[i] || false;
 
                   return (
                     <div
@@ -113,7 +114,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
                       )}
 
                       {/* باقي النقط (مخفية في البداية) */}
-                      {open && points.length > 0 && (
+                      {isOpen && points.length > 0 && (
                         <ul className="space-y-2 pl-4">
                           {points.map((p, idx) => (
                             <li key={idx} className="flex">
@@ -127,10 +128,15 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
                       {/* زرار اقرأ المزيد */}
                       {points.length > 0 && (
                         <button
-                          onClick={() => setOpen(!open)}
+                          onClick={() =>
+                            setOpenItems((prev) => ({
+                              ...prev,
+                              [i]: !isOpen,
+                            }))
+                          }
                           className="mt-2 text-sm text-accent-purple font-semibold hover:underline"
                         >
-                          {open ? "إخفاء التفاصيل" : "اقرأ المزيد"}
+                          {isOpen ? "إخفاء التفاصيل" : "اقرأ المزيد"}
                         </button>
                       )}
                     </div>

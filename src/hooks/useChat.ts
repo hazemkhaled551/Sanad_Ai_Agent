@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef} from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -76,7 +76,7 @@ export const useChat = (initialConversationId?: number) => {
       throw new Error("Failed to send message");
     }
 
-    console.log("Message sent successfully");
+    // console.log("Message sent successfully");
 
     return res.json();
   };
@@ -97,10 +97,10 @@ export const useChat = (initialConversationId?: number) => {
       }
 
       const data = await res.json();
-      console.log("🔹 Loaded conversation:", data);
+      // console.log("🔹 Loaded conversation:", data);
 
       const msgs = Array.isArray(data) ? data : data?.messages || [];
-      console.log("🔹 Messages:", msgs);
+      // console.log("🔹 Messages:", msgs);
 
       const loadedMessages: Message[] = msgs.map((msg: any) => ({
         id: msg.id?.toString() || crypto.randomUUID(),
@@ -172,8 +172,8 @@ export const useChat = (initialConversationId?: number) => {
       }
 
       const response = await sendMessageApi(userMessage.content, convId);
-      console.log("🔹 Response:", response);
-      console.log(response.aiMessage.content);
+      // console.log("🔹 Response:", response);
+      // console.log(response.aiMessage.content);
 
       const aiMessage: Message = {
         id: response.aiMessage.id?.toString() || crypto.randomUUID(),

@@ -27,7 +27,7 @@ function PopUp({
         >
           <X className="w-7 h-7" />
         </button>
-        <p className="text-gray-800 text-md">{children}</p>
+        <div className="text-gray-800 text-md">{children}</div>
       </div>
     </div>
   );

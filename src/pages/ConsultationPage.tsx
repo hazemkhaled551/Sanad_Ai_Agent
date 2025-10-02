@@ -9,8 +9,8 @@ import ChatInput from "../components/chat/ChatInput";
 import { useChat } from "../hooks/useChat";
 
 export default function ConsultationPage() {
-  const { id } = useParams(); // ✅ id بتاع المحادثة من اللينك
-  console.log("id", id);
+  const { id } = useParams();
+  // console.log("id", id);
   
   const { 
     messages, 
@@ -18,17 +18,17 @@ export default function ConsultationPage() {
     setInputMessage, 
     isLoading, 
     sendMessage,
-    loadConversation // ✅ الفنكشن الجديدة اللي ضفناها في useChat
+    loadConversation 
   } = useChat();
 
-  // ✅ أول ما الصفحة تتفتح يجيب المحادثة لو فيه id
+
   useEffect(() => {
     if (id) {
       loadConversation(Number(id));
     }
   }, [id, loadConversation]);
 
-  // ✅ هندل الإنتر والشفت+إنتر
+  
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.code === "Enter" && !e.shiftKey) {
