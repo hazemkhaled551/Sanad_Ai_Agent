@@ -36,14 +36,7 @@ function App() {
                   path="/waiting_verify_email"
                   element={<WaitingVerifyEmail />}
                 />
-                <Route
-                  path="/reset_password"
-                  element={
-                    <ProtectedRoute>
-                      <ResetPassword />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="/reset_password" element={<ResetPassword />}/>
                 <Route
                   path="/dashboard"
                   element={
