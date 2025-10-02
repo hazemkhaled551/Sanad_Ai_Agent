@@ -82,7 +82,7 @@ export default function ForgetPassword() {
                         )}
                         {success && (
                             <div className="bg-green-500/20 text-green-300 px-3 py-2 rounded-md text-sm">
-                                {success}
+                                {success} Don't forget to check your spam folder.
                             </div>
                         )}
 

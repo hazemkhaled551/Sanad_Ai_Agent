@@ -11,19 +11,35 @@ export default function ResetPassword() {
   const [form, setForm] = useState({ password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const userId = searchParams.get("userId") || "";
-  const token = searchParams.get("token") || "";
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
+    if (message) setMessage("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // ✅ تحقق من أن الرابط صالح
+    if (!userId || userId.trim() === "") {
+      setMessage("Invalid reset link. Please request a new password reset email.");
+      setSuccess(false);
+      return;
+    }
+
+    if (!token || token.trim() === "") {
+      setMessage("Invalid or missing token. Please request a new reset email.");
+      setSuccess(false);
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
       setMessage("Passwords do not match");
+      setSuccess(false);
       return;
     }
 
@@ -35,23 +51,44 @@ export default function ResetPassword() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: userId,
-            token: token,
-            newPassword: form.password,
+            UserId: userId,
+            Token: token,
+            NewPassword: form.password,
           }),
         }
       );
 
-      const result = await response.text();
+      const contentType = response.headers.get("content-type");
+      let result: any;
+
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        const text = await response.text();
+        result = { message: text };
+      }
+
       if (response.ok) {
-        setMessage(result || "Password reset successfully!");
+        setMessage(result?.message || "Password reset successfully!");
+        setSuccess(true);
         setForm({ password: "", confirmPassword: "" });
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setMessage(result || "Reset failed.");
+        let errorMessage = "Reset failed.";
+        if (result?.errors) {
+          const firstKey = Object.keys(result.errors)[0];
+          if (firstKey && result.errors[firstKey].length > 0) {
+            errorMessage = result.errors[firstKey][0];
+          }
+        } else if (result?.message) {
+          errorMessage = result.message;
+        }
+        setMessage(errorMessage);
+        setSuccess(false);
       }
-    } catch (err) {
-      setMessage("Error connecting to server");
+    } catch (err: any) {
+      setMessage(err?.message || "Error connecting to server");
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
@@ -59,7 +96,6 @@ export default function ResetPassword() {
 
   return (
     <div className="bg-gradient-to-b from-purple-800 via-indigo-900 to-gray-950 min-h-screen flex flex-col">
-      {/* ===== Header ===== */}
       <header className="px-6 py-4 bg-gradient-to-r from-purple-800 via-indigo-900 to-gray-900 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-white flex items-center space-x-2 space-x-reverse">
@@ -70,8 +106,6 @@ export default function ResetPassword() {
           <ChangeLanguageButton />
         </div>
       </header>
-
-      {/* ===== Main Content ===== */}
       <main className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-sm p-6 bg-white/10 rounded-2xl bg-gradient-to-b from-purple-700 to-gray-900">
           <h1 className="mt-4 text-xl font-semibold text-white text-center">
@@ -82,20 +116,18 @@ export default function ResetPassword() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Password */}
             <div>
               <input
                 type="password"
                 id="password"
                 value={form.password}
                 onChange={handleChange}
-                placeholder="Password"
+                placeholder="New Password"
                 required
                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none dark:bg-neutral-dark dark:border-gray-600"
               />
             </div>
 
-            {/* Confirm Password */}
             <div>
               <input
                 type="password"
@@ -107,8 +139,6 @@ export default function ResetPassword() {
                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none dark:bg-neutral-dark dark:border-gray-600"
               />
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -122,14 +152,18 @@ export default function ResetPassword() {
           </form>
 
           {message && (
-            <div className="mt-3 text-center text-sm text-gray-700 dark:text-gray-300">
+            <div
+              className={`mt-3 text-center text-sm ${
+                success
+                  ? "text-green-600"
+                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md text-sm text-center"
+              }`}
+            >
               {message}
             </div>
           )}
         </div>
       </main>
-
-      {/* ===== Footer ===== */}
       <footer className="px-6 py-8 bg-neutral-darker text-white mt-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
