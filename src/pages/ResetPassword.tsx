@@ -11,19 +11,35 @@ export default function ResetPassword() {
   const [form, setForm] = useState({ password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const userId = searchParams.get("userId") || "";
-  const token = searchParams.get("token") || "";
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
+    if (message) setMessage("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // ✅ تحقق من أن الرابط صالح
+    if (!userId || userId.trim() === "") {
+      setMessage("Invalid reset link. Please request a new password reset email.");
+      setSuccess(false);
+      return;
+    }
+
+    if (!token || token.trim() === "") {
+      setMessage("Invalid or missing token. Please request a new reset email.");
+      setSuccess(false);
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
       setMessage("Passwords do not match");
+      setSuccess(false);
       return;
     }
 
@@ -35,23 +51,50 @@ export default function ResetPassword() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+<<<<<<< HEAD
             userId: userId,
             token: token,
             newPassword: form.password,
+=======
+            UserId: userId,
+            Token: token,
+            NewPassword: form.password,
+>>>>>>> 511808c13623a511c0e2b7efa952839fe3857fd6
           }),
         }
       );
 
-      const result = await response.text();
-      if (response.ok) {
-        setMessage(result || "Password reset successfully!");
-        setForm({ password: "", confirmPassword: "" });
-        setTimeout(() => navigate("/login"), 2000);
-      } else {
-        setMessage(result || "Reset failed.");
+      let errorMessage = "Reset failed.";
+
+      try {
+        const result = await response.json();
+
+        if (response.ok) {
+          setMessage(result?.message || "Password reset successfully!");
+          setSuccess(true);
+          setForm({ password: "", confirmPassword: "" });
+          setTimeout(() => navigate("/login"), 2000);
+        } else {
+          // ✅ نعرض أول خطأ من قائمة errors لو موجود
+          if (result?.errors) {
+            const firstKey = Object.keys(result.errors)[0];
+            if (firstKey && result.errors[firstKey].length > 0) {
+              errorMessage = result.errors[firstKey][0];
+            }
+          } else if (result?.message) {
+            errorMessage = result.message;
+          }
+          setMessage(errorMessage);
+          setSuccess(false);
+        }
+      } catch {
+        const text = await response.text();
+        setMessage(text || "Reset failed.");
+        setSuccess(false);
       }
-    } catch (err) {
-      setMessage("Error connecting to server");
+    } catch (err: any) {
+      setMessage(err?.message || "Error connecting to server");
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
@@ -73,6 +116,7 @@ export default function ResetPassword() {
 
       {/* ===== Main Content ===== */}
       <main className="flex flex-1 items-center justify-center px-4">
+<<<<<<< HEAD
         <div className="w-full max-w-sm p-6 bg-white/10 rounded-2xl bg-gradient-to-b from-purple-700 to-gray-900">
           <h1 className="mt-4 text-xl font-semibold text-white text-center">
             Sanad
@@ -80,10 +124,21 @@ export default function ResetPassword() {
           <p className="text-gray-300 text-sm text-center mt-2">
             Reset Your Password
           </p>
+=======
+        <div className="w-full max-w-md bg-white dark:bg-neutral-darker shadow-lg rounded-2xl p-6 text-center">
+          <h3 className="text-2xl font-bold text-primary mb-2">Sanad</h3>
+          <h5 className="text-lg font-medium mb-6">Reset Your Password</h5>
+>>>>>>> 511808c13623a511c0e2b7efa952839fe3857fd6
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Password */}
             <div>
+<<<<<<< HEAD
+=======
+              <label htmlFor="password" className="block text-sm font-medium mb-1">
+                New Password
+              </label>
+>>>>>>> 511808c13623a511c0e2b7efa952839fe3857fd6
               <input
                 type="password"
                 id="password"
@@ -97,6 +152,12 @@ export default function ResetPassword() {
 
             {/* Confirm Password */}
             <div>
+<<<<<<< HEAD
+=======
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
+                Confirm Password
+              </label>
+>>>>>>> 511808c13623a511c0e2b7efa952839fe3857fd6
               <input
                 type="password"
                 id="confirmPassword"
@@ -122,7 +183,13 @@ export default function ResetPassword() {
           </form>
 
           {message && (
-            <div className="mt-3 text-center text-sm text-gray-700 dark:text-gray-300">
+            <div
+              className={`mt-3 text-center text-sm ${
+                success
+                  ? "text-green-600"
+                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md"
+              }`}
+            >
               {message}
             </div>
           )}

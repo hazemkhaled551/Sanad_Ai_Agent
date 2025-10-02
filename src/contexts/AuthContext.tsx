@@ -75,7 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(data.raw);
       }
       if (data?.errors) {
-        // ناخد أول error ونرميه
         const messages = Object.values(data.errors).flat();
         throw new Error(messages.join(" | "));
       }
@@ -127,7 +126,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (!res.ok) throw new Error("Failed to update user");
 
-    // ندمج التعديلات مع الداتا القديمة
     const updatedUser = { ...user, ...updates };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));

@@ -36,6 +36,7 @@ function App() {
                   path="/waiting_verify_email"
                   element={<WaitingVerifyEmail />}
                 />
+<<<<<<< HEAD
                 <Route
                   path="/reset_password"
                   element={
@@ -44,6 +45,9 @@ function App() {
                 
                   }
                 />
+=======
+                <Route path="/reset_password" element={<ResetPassword />}/>
+>>>>>>> 511808c13623a511c0e2b7efa952839fe3857fd6
                 <Route
                   path="/dashboard"
                   element={
