@@ -24,7 +24,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ تحقق من أن الرابط صالح
     if (!userId || userId.trim() === "") {
       setMessage("Invalid reset link. Please request a new password reset email.");
       setSuccess(false);
@@ -59,14 +58,21 @@ export default function ResetPassword() {
       );
 
       const contentType = response.headers.get("content-type");
-      let result: any;
+      let result: any = {};
 
+      // ✅ Parse JSON أو نص عادي
       if (contentType && contentType.includes("application/json")) {
         result = await response.json();
       } else {
         const text = await response.text();
-        result = { message: text };
+        try {
+          result = JSON.parse(text);
+        } catch {
+          result = { message: text };
+        }
       }
+
+      console.log("Server Response:", result);
 
       if (response.ok) {
         setMessage(result?.message || "Password reset successfully!");
@@ -74,15 +80,21 @@ export default function ResetPassword() {
         setForm({ password: "", confirmPassword: "" });
         setTimeout(() => navigate("/login"), 2000);
       } else {
+        // ✅ هندلة كل أنواع الأخطاء
         let errorMessage = "Reset failed.";
+
         if (result?.errors) {
-          const firstKey = Object.keys(result.errors)[0];
-          if (firstKey && result.errors[firstKey].length > 0) {
-            errorMessage = result.errors[firstKey][0];
-          }
+          // جمع كل الأخطاء في رسالة واحدة
+          const allErrors = Object.values(result.errors)
+            .flat()
+            .join(" | ");
+          errorMessage = allErrors || errorMessage;
         } else if (result?.message) {
           errorMessage = result.message;
+        } else if (typeof result === "string") {
+          errorMessage = result;
         }
+
         setMessage(errorMessage);
         setSuccess(false);
       }
