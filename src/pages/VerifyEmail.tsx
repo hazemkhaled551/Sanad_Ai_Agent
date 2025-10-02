@@ -96,7 +96,7 @@ export default function VerifyEmail() {
                 className={`mb-3 text-sm ${
                   success
                     ? "text-green-600"
-                    : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md text-center"
+                    : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md text-sm text-center"
                 }`}
               >
                 {message}

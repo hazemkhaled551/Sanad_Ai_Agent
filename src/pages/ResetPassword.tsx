@@ -61,7 +61,16 @@ export default function ResetPassword() {
         setForm({ password: "", confirmPassword: "" });
         setTimeout(() => navigate("/login"), 2000);
       } else {
-        setMessage(result?.message || "Reset failed.");
+        let errorMessage = result?.message || "Reset failed.";
+
+        if (result?.errors) {
+          const firstKey = Object.keys(result.errors)[0];
+          if (firstKey && result.errors[firstKey].length > 0) {
+            errorMessage = result.errors[firstKey][0];
+          }
+        }
+
+        setMessage(errorMessage);
         setSuccess(false);
       }
     } catch (err: any) {
@@ -94,7 +103,6 @@ export default function ResetPassword() {
           <h5 className="text-lg font-medium mb-6">Reset Your Password</h5>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-1">
                 New Password
@@ -109,7 +117,7 @@ export default function ResetPassword() {
               />
             </div>
 
-            {/* Confirm Password */}
+
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
                 Confirm Password
@@ -124,7 +132,6 @@ export default function ResetPassword() {
               />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -142,7 +149,7 @@ export default function ResetPassword() {
               className={`mt-3 text-center text-sm ${
                 success
                   ? "text-green-600"
-                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md"
+                  : "bg-red-500/20 text-red-300 px-3 py-2 rounded-md text-sm text-center"
               }`}
             >
               {message}
