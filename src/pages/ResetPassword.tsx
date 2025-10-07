@@ -25,7 +25,9 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (!userId || userId.trim() === "") {
-      setMessage("Invalid reset link. Please request a new password reset email.");
+      setMessage(
+        "Invalid reset link. Please request a new password reset email."
+      );
       setSuccess(false);
       return;
     }
@@ -85,9 +87,7 @@ export default function ResetPassword() {
 
         if (result?.errors) {
           // جمع كل الأخطاء في رسالة واحدة
-          const allErrors = Object.values(result.errors)
-            .flat()
-            .join(" | ");
+          const allErrors = Object.values(result.errors).flat().join(" | ");
           errorMessage = allErrors || errorMessage;
         } else if (result?.message) {
           errorMessage = result.message;
@@ -111,9 +111,9 @@ export default function ResetPassword() {
       <header className="px-6 py-4 bg-gradient-to-r from-purple-800 via-indigo-900 to-gray-900 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-white flex items-center space-x-2 space-x-reverse">
-            <span className="font-semibold text-4xl text-white">
+            <Link to={"/"} className="font-semibold text-4xl  text-white">
               {t("brand")}
-            </span>
+            </Link>
           </div>
           <ChangeLanguageButton />
         </div>

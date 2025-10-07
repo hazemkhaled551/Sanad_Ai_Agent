@@ -36,9 +36,9 @@ export default function Login() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-white flex items-center space-x-2 space-x-reverse">
          
-            <span className="font-semibold text-4xl  text-white">
+            <Link to={"/"} className="font-semibold text-4xl  text-white">
               {t("brand")}
-            </span>
+            </Link>
           </div>
           <ChangeLanguageButton  />
         </div>

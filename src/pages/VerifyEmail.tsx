@@ -16,7 +16,7 @@ export default function VerifyEmail() {
   useEffect(() => {
     const verifyEmail = async () => {
       const userId = searchParams.get("userId");
-      const token =searchParams.get("token");
+      const token = searchParams.get("token");
 
       if (!userId || !token) {
         setMessage(t("verifyEmail.invalidLink"));
@@ -26,14 +26,13 @@ export default function VerifyEmail() {
       }
 
       try {
-
-        console.log("Sending:", { userId:userId, token:token });
+        console.log("Sending:", { userId: userId, token: token });
         const response = await fetch(
           "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/verify-email",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId:userId, token:token }),
+            body: JSON.stringify({ userId: userId, token: token }),
           }
         );
 
@@ -72,9 +71,9 @@ export default function VerifyEmail() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2 space-x-reverse">
             <Scale className="w-5 h-5 text-primary" />
-            <span className="font-semibold text-2xl text-neutral-dark dark:text-white">
+            <Link to={"/"} className="font-semibold text-4xl  text-white">
               {t("brand")}
-            </span>
+            </Link>
           </div>
           <ChangeLanguageButton />
         </div>

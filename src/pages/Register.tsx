@@ -44,10 +44,9 @@ export default function Register() {
       <header className="px-6 py-4 bg-gradient-to-r from-purple-800 via-indigo-900 to-gray-900 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2 space-x-reverse">
-            
-            <span className="font-semibold text-4xl text-white">
+            <Link to={"/"} className="font-semibold text-4xl  text-white">
               {t("brand")}
-            </span>
+            </Link>
           </div>
           <ChangeLanguageButton />
         </div>

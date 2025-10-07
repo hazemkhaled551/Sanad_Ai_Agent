@@ -12,9 +12,9 @@ export default function WaitingVerifyEmail() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2 space-x-reverse">
             <Scale className="w-5 h-5 text-white" />
-            <span className="font-semibold text-4xl text-neutral-dark dark:text-white">
+            <Link to={"/"} className="font-semibold text-4xl  text-white">
               {t("brand")}
-            </span>
+            </Link>
           </div>
           <ChangeLanguageButton />
         </div>
