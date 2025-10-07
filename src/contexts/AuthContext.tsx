@@ -106,6 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       role: data.role,
       conversations: data.conversations,
     };
+    
     setUser(userObj);
     localStorage.setItem("user", JSON.stringify(userObj));
     navigate("/dashboard", { replace: true });

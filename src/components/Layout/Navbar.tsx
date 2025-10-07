@@ -46,7 +46,7 @@ function MainNavbar() {
     <Navbar expand="xl" className="bg-body-tertiary">
       <Container fluid>
         <Navbar.Brand className="text-4xl">
-          <Link to="/">{t("brand")}</Link>
+          <Link to={"/"}>{t("brand")}</Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

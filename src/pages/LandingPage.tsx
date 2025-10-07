@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Scale, Shield, Users, ArrowLeft, Zap, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
@@ -8,8 +9,9 @@ import { useAuth } from "../contexts/AuthContext";
 
 const LandingPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user, loginAsGuest , logout} = useAuth();
-  console.log(user);
+  const { user, loginAsGuest, logout } = useAuth();
+  const [loadingGuest, setLoadingGuest] = useState(false);
+  // console.log(user);
 
   const features = [
     {
@@ -89,13 +91,49 @@ const LandingPage: React.FC = () => {
 
           {!user && (
             <Button
-              onClick={loginAsGuest}
+              onClick={async () => {
+                try {
+                  setLoadingGuest(true);
+                  await loginAsGuest();
+                } finally {
+                  setLoadingGuest(false);
+                }
+              }}
               variant="secondary"
               size="lg"
-              className="flex"
+              className="flex items-center justify-center"
+              disabled={loadingGuest} // يمنع الضغط أثناء التحميل
             >
-              {t("landingPage.actions.lawyerLogin")}
-              <Users className="w-5 h-5 mx-2" />
+              {loadingGuest ? (
+                <>
+                  <svg
+                    className="animate-spin w-5 h-5 text-white mx-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  {t("landingPage.actions.loading")}
+                </>
+              ) : (
+                <>
+                  {t("landingPage.actions.lawyerLogin")}
+                  <Users className="w-5 h-5 mx-2" />
+                </>
+              )}
             </Button>
           )}
         </div>
