@@ -47,7 +47,7 @@ export default function ResetPassword() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/reset-password",
+        "https://sand-backend-production-cbbc.up.railway.app/api/Auth/reset-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

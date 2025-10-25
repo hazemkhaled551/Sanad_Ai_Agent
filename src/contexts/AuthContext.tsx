@@ -22,7 +22,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = "https://sanad-backend-production-cbbc.up.railway.app/api";
+const API_BASE = "https://sand-backend-production-cbbc.up.railway.app/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (name: string, email: string, password: string) => {
     const res = await fetch(
-      "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/register",
+      "https://sand-backend-production-cbbc.up.railway.app/api/Auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

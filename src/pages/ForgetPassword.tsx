@@ -18,7 +18,7 @@ export default function ForgetPassword() {
 
         try {
             const res = await fetch(
-                "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/forget-password",
+                "https://sand-backend-production-cbbc.up.railway.app/api/Auth/forget-password",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

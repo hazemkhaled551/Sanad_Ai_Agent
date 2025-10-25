@@ -40,7 +40,7 @@ export const useChat = (initialConversationId?: number) => {
     userId: string,
     title: string
   ): Promise<number> => {
-    const url = `https://sanad-backend-production-cbbc.up.railway.app/api/Conversations?UserId=${encodeURIComponent(
+    const url = `https://sand-backend-production-cbbc.up.railway.app/api/Conversations?UserId=${encodeURIComponent(
       userId
     )}&Title=${encodeURIComponent(title)}`;
 
@@ -58,7 +58,7 @@ export const useChat = (initialConversationId?: number) => {
 
   const sendMessageApi = async (content: string, convId: number) => {
     const res = await fetch(
-      "https://sanad-backend-production-cbbc.up.railway.app/api/Messages",
+      "https://sand-backend-production-cbbc.up.railway.app/api/Messages",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,7 +87,7 @@ export const useChat = (initialConversationId?: number) => {
 
     try {
       const res = await fetch(
-        `https://sanad-backend-production-cbbc.up.railway.app/api/Messages/conversation/${convId}`
+        `https://sand-backend-production-cbbc.up.railway.app/api/Messages/conversation/${convId}`
       );
 
       if (!res.ok) {

@@ -20,7 +20,7 @@ function ConsultationHistory() {
   const deleteConversation = async (id: string) => {
     try {
       const res = await fetch(
-        `https://sanad-backend-production-cbbc.up.railway.app/api/Conversations/${id}`,
+        `https://sand-backend-production-cbbc.up.railway.app/api/Conversations/${id}`,
         { method: "DELETE", headers: { "Content-Type": "application/json" } }
       );
 

@@ -28,7 +28,7 @@ export default function VerifyEmail() {
       try {
         console.log("Sending:", { userId: userId, token: token });
         const response = await fetch(
-          "https://sanad-backend-production-cbbc.up.railway.app/api/Auth/verify-email",
+          "https://sand-backend-production-cbbc.up.railway.app/api/Auth/verify-email",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
